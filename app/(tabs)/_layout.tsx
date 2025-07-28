@@ -4,24 +4,24 @@ import { Colours } from "@/constants/Colours";
 const TabIcon = ({ txt, icon, isFocus }: any) => {
   if (isFocus) {
     return (
-      <View>
+      <View className="flex flex-col w-full  min-w-[115px] min-h-[60px] items-center justify-center overflow-hidden">
         <Image
           source={icon}
           style={{ width: 30, height: 28 }}
           tintColor={Colours.icon.focused}
         />
-        <Text className="text-light">{txt}</Text>
+        <Text className="text-light font-mono font-bold text-xs">{txt}</Text>
       </View>
     );
   }
   return (
-    <View>
+    <View className="flex flex-col w-full  min-w-[115px] min-h-[60px] items-center justify-center overflow-hidden">
       <Image
         source={icon}
         style={{ width: 30, height: 28 }}
         tintColor={Colours.icon.unfocused}
       />
-      <Text className="text-light/40">{txt}</Text>
+      <Text className="text-light/40 font-mono font-bold text-xs">{txt}</Text>
     </View>
   );
 };
@@ -39,7 +39,8 @@ export default function TabLayout() {
         },
         tabBarStyle: {
           backgroundColor: Colours.darkBackground,
-          height: 70,
+          height: 90,
+          paddingTop: 10,
         },
       }}
     >
@@ -58,13 +59,13 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="exercises"
+        name="exercise"
         options={{
-          title: "Exercises",
+          title: "Exercise",
           headerShown: false,
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              txt="Exercises"
+              txt="Exercise"
               icon={require("@/assets/images/situp.png")}
               isFocus={focused}
             />
