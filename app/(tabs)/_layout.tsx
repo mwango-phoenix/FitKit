@@ -39,7 +39,7 @@ export default function TabLayout() {
         },
         tabBarStyle: {
           backgroundColor: Colours.darkBackground,
-          height: 90,
+          height: 95,
           paddingTop: 10,
         },
       }}
