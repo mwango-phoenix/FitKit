@@ -4,45 +4,20 @@ import { collection, getDocs, query } from "firebase/firestore";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Alert, FlatList, Text, View } from "react-native";
 import { db } from "../FirebaseConfig";
-import RoutineBottomSheet from "./modals/RoutineDetails";
 import RoutineTile from "./RoutineTile";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import RoutineBottom from "./modals/RoutineBottom";
+import { useFetch } from "@/services/useFetch";
+import { fetchRoutines } from "@/services/api";
+
+
 
 const RoutineList: React.FC = () => {
   const [selectedRoutine, setSelectedRoutine] = useState<Routine | null>(null);
-  const [routines, setRoutines] = useState<Routine[]>([]);
-  const [loading, setLoading] = useState(true);
+
   const sheetRef = useRef<BottomSheet>(null);
 
-  // Function to fetch routines from database (can be called for both real-time and one-time)
-  const fetchRoutines = useCallback(async () => {
-    setLoading(true);
-
-    const routinesQuery = query(collection(db, "routines"));
-
-    try {
-      const querySnapshot = await getDocs(routinesQuery);
-      const fetchedRoutines: Routine[] = [];
-      querySnapshot.forEach((document) => {
-        fetchedRoutines.push({
-          id: document.id,
-          ...(document.data() as Omit<Routine, "id">),
-        });
-      });
-      setRoutines(fetchedRoutines);
-    } catch (error) {
-      console.error("Error fetching one-time routines: ", error);
-      Alert.alert("Error", "Failed to load routines. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-    return undefined;
-  }, []);
-
-  useEffect(() => {
-    fetchRoutines();
-  }, [fetchRoutines]);
+  const { data: routines, loading } = useFetch(fetchRoutines);
 
   const openBottomSheet = useCallback(() => {
     sheetRef.current?.snapToIndex(2);
