@@ -20,6 +20,6 @@ export const fetchExercise = async (exerciseId: string): Promise<Exercise> => {
     throw new Error(`Exercise with ID ${exerciseId} not found`);
   }
 
-  return docSnap.data() as Omit<Exercise, "id">;
+  return { ...(docSnap.data() as Omit<Exercise, "exerciseId">), exerciseId: exerciseId };
 
 };
