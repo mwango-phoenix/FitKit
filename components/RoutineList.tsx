@@ -1,11 +1,9 @@
 // components/RoutineList.tsx
 import { Routine } from "@/.expo/types/routine";
-import { collection, getDocs, query } from "firebase/firestore";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Alert, FlatList, Text, View } from "react-native";
-import { db } from "../FirebaseConfig";
+import React, { useCallback, useRef, useState } from "react";
+import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import RoutineTile from "./RoutineTile";
-import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import BottomSheet from "@gorhom/bottom-sheet";
 import RoutineBottom from "./modals/RoutineBottom";
 import { useFetch } from "@/services/useFetch";
 import { fetchRoutines } from "@/services/api";
@@ -20,7 +18,7 @@ const RoutineList: React.FC = () => {
   const { data: routines, loading } = useFetch(fetchRoutines);
 
   const openBottomSheet = useCallback(() => {
-    sheetRef.current?.snapToIndex(2);
+    sheetRef.current?.snapToIndex(1);
   }, []);
 
   if (loading) {
