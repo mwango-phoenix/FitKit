@@ -1,25 +1,17 @@
 import React from "react";
-import {
-  ImageBackground,
-  Text,
-  TouchableOpacity,
-  View
-} from "react-native";
+import { ImageBackground, Text, TouchableOpacity, View } from "react-native";
 
 interface Props {
   id: string;
   name: string;
   img: string;
+  onPress?: () => void;
 }
 
-const RoutineTile = ({ id, name, img }: Props) => {
+const RoutineTile = ({ id, name, img, onPress }: Props) => {
   return (
-    // <Link
-    //   href={`/exercises/${id}`}
-    //   className="flex flex-col items-center justify-center"
-    // >
-    <TouchableOpacity className="shadow-md my-3">
-      <ImageBackground
+    <TouchableOpacity className="shadow-md my-3" onPress={onPress}>
+      <ImageBackground 
         source={require("@/assets/images/legDay1.jpg")}
         className="w-full h-48 bg-darkBackground rounded-2xl opacity-90"
         imageStyle={{ borderRadius: 16, opacity: 0.8 }}
@@ -29,9 +21,6 @@ const RoutineTile = ({ id, name, img }: Props) => {
         </View>
       </ImageBackground>
     </TouchableOpacity>
-    // </Link>
-    // <Text className="text-lg text-gray-800 p-4">
-    //   {name}</Text>
   );
 };
 

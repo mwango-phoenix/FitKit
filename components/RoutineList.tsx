@@ -1,57 +1,25 @@
 // components/RoutineList.tsx
-import React, { useEffect, useState, useCallback } from "react";
-import { View, Text, FlatList, ActivityIndicator, Alert } from "react-native";
-import {
-  collection,
-  query,
-  where,
-  orderBy,
-  onSnapshot,
-  getDocs,
-  doc,
-} from "firebase/firestore";
-import { db } from "../FirebaseConfig";
+import { Routine } from "@/.expo/types/routine";
+import React, { useCallback, useRef, useState } from "react";
+import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import RoutineTile from "./RoutineTile";
+import BottomSheet from "@gorhom/bottom-sheet";
+import RoutineBottom from "./modals/RoutineBottom";
+import { useFetch } from "@/services/useFetch";
+import { fetchRoutines } from "@/services/api";
 
-interface Routine {
-  id: string;
-  name: string;
-  bgImage: string;
-  exercises: string[];
-}
+
 
 const RoutineList: React.FC = () => {
-  const [routines, setRoutines] = useState<Routine[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [selectedRoutine, setSelectedRoutine] = useState<Routine | null>(null);
 
-  // Function to fetch routines from database (can be called for both real-time and one-time)
-  const fetchRoutines = useCallback(async () => {
-    setLoading(true);
+  const sheetRef = useRef<BottomSheet>(null);
 
-    const routinesQuery = query(collection(db, "routines"));
+  const { data: routines, loading } = useFetch(fetchRoutines);
 
-    try {
-      const querySnapshot = await getDocs(routinesQuery);
-      const fetchedRoutines: Routine[] = [];
-      querySnapshot.forEach((document) => {
-        fetchedRoutines.push({
-          id: document.id,
-          ...(document.data() as Omit<Routine, "id">),
-        });
-      });
-      setRoutines(fetchedRoutines);
-    } catch (error) {
-      console.error("Error fetching one-time routines: ", error);
-      Alert.alert("Error", "Failed to load routines. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-    return undefined;
+  const openBottomSheet = useCallback(() => {
+    sheetRef.current?.snapToIndex(1);
   }, []);
-
-  useEffect(() => {
-    fetchRoutines();
-  }, [fetchRoutines]);
 
   if (loading) {
     return (
@@ -62,16 +30,30 @@ const RoutineList: React.FC = () => {
     );
   }
 
+  const handleRoutinePress = (routine: Routine) => {
+    setSelectedRoutine(routine);
+    openBottomSheet();
+  };
+
   return (
-    <FlatList
-      data={routines}
-      renderItem={({ item }: { item: Routine }) => (
-          <RoutineTile id={item.id} name={item.name} img={item.bgImage} />
-        // <Text className="text-lg text-gray-800 p-4">{item.name} </Text>
-      )}
-      keyExtractor={(item) => item.id}
-      contentContainerStyle={{ paddingBottom: 20 }}
-    />
+    <View className="flex-1 ">
+      <FlatList
+        data={routines}
+        renderItem={({ item }: { item: Routine }) => (
+          <RoutineTile
+            id={item.id}
+            name={item.name}
+            img={item.bgImage}
+            onPress={() => handleRoutinePress(item)}
+          />
+        )}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={{ paddingBottom: 20 }}
+      />
+      <RoutineBottom routine={selectedRoutine} ref={sheetRef}/>
+      
+      
+    </View>
   );
 };
 
