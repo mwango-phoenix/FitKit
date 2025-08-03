@@ -1,5 +1,7 @@
 # FitKit
-- A workout planner and tracker to help you achieve your fitness goals and plan routines efficiently.
+A workout planner and tracker to help you achieve your fitness goals and plan routines efficiently.
+
+[View App Blueprint](https://www.behance.net/gallery/230345317/FitKit)
 
   
 - ## Features
