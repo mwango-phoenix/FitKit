@@ -20,6 +20,19 @@ const RoutineBottom = forwardRef<BottomSheet, Props>(
 
     const { exercises, loading, error } = useFetchExercises(exerciseIds);
 
+    const exercisesWithSetsAndReps = routine?.exercises
+      .map(({ exerciseId, reps, sets }) => {
+        const exercise = exercises.find((ex) => ex.exerciseId === exerciseId);
+        if (!exercise) return null; 
+
+        return {
+          ...exercise,
+          reps,
+          sets,
+        };
+      })
+      .filter(Boolean) || [];
+
     return (
       <BottomSheet
         snapPoints={snapPoints}
@@ -46,9 +59,10 @@ const RoutineBottom = forwardRef<BottomSheet, Props>(
                 </Text>
               )}
 
-              {exercises.map((ex, index) => (
-                <ExerciseItem key={ex.exerciseId} exercise={ex} />
-              ))}
+              {exercisesWithSetsAndReps.map(
+                (ex, index) =>
+                  ex && <ExerciseItem key={ex.exerciseId} exercise={ex} />
+              )}
             </>
           ) : (
             <Text className="text-gray-500">No routine selected</Text>
