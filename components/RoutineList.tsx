@@ -1,28 +1,19 @@
 // components/RoutineList.tsx
-import React, { useEffect, useState, useCallback } from "react";
-import { View, Text, FlatList, ActivityIndicator, Alert } from "react-native";
-import {
-  collection,
-  query,
-  where,
-  orderBy,
-  onSnapshot,
-  getDocs,
-  doc,
-} from "firebase/firestore";
+import { Routine } from "@/.expo/types/routine";
+import { collection, getDocs, query } from "firebase/firestore";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { ActivityIndicator, Alert, FlatList, Text, View } from "react-native";
 import { db } from "../FirebaseConfig";
+import RoutineBottomSheet from "./modals/RoutineDetails";
 import RoutineTile from "./RoutineTile";
-
-interface Routine {
-  id: string;
-  name: string;
-  bgImage: string;
-  exercises: string[];
-}
+import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import RoutineBottom from "./modals/RoutineBottom";
 
 const RoutineList: React.FC = () => {
+  const [selectedRoutine, setSelectedRoutine] = useState<Routine | null>(null);
   const [routines, setRoutines] = useState<Routine[]>([]);
   const [loading, setLoading] = useState(true);
+  const sheetRef = useRef<BottomSheet>(null);
 
   // Function to fetch routines from database (can be called for both real-time and one-time)
   const fetchRoutines = useCallback(async () => {
@@ -53,6 +44,10 @@ const RoutineList: React.FC = () => {
     fetchRoutines();
   }, [fetchRoutines]);
 
+  const openBottomSheet = useCallback(() => {
+    sheetRef.current?.snapToIndex(2);
+  }, []);
+
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center">
@@ -62,16 +57,30 @@ const RoutineList: React.FC = () => {
     );
   }
 
+  const handleRoutinePress = (routine: Routine) => {
+    setSelectedRoutine(routine);
+    openBottomSheet();
+  };
+
   return (
-    <FlatList
-      data={routines}
-      renderItem={({ item }: { item: Routine }) => (
-          <RoutineTile id={item.id} name={item.name} img={item.bgImage} />
-        // <Text className="text-lg text-gray-800 p-4">{item.name} </Text>
-      )}
-      keyExtractor={(item) => item.id}
-      contentContainerStyle={{ paddingBottom: 20 }}
-    />
+    <View className="flex-1 ">
+      <FlatList
+        data={routines}
+        renderItem={({ item }: { item: Routine }) => (
+          <RoutineTile
+            id={item.id}
+            name={item.name}
+            img={item.bgImage}
+            onPress={() => handleRoutinePress(item)}
+          />
+        )}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={{ paddingBottom: 20 }}
+      />
+      <RoutineBottom routine={selectedRoutine} ref={sheetRef}/>
+      
+      
+    </View>
   );
 };
 
