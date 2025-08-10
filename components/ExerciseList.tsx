@@ -35,18 +35,40 @@ const ExerciseList: React.FC = () => {
     openBottomSheet();
   };
 
+
+
+if (!loading && exercises) {
+  // Group by exercise.id
+  const grouped = exercises.reduce((acc, ex) => {
+    if (!acc[ex.id]) {
+      acc[ex.id] = [];
+    }
+    acc[ex.id].push(ex);
+    return acc;
+  }, {} as Record<string, typeof exercises>);
+
+  // Only keep IDs with more than one occurrence
+  const duplicates = Object.values(grouped).filter(group => group.length > 1);
+
+  console.log("HERE", duplicates);
+}
+
   return (
     <View className="flex-1 ">
       <FlatList
         data={exercises}
         renderItem={({ item }: { item: Exercise }) => (
-          <ExerciseTile
-            exercise={item}
-            onPress={() => handleExercisePress(item)}
-          />
+          <View className="flex-1 h-40">
+            <ExerciseTile
+              exercise={item}
+              onPress={() => handleExercisePress(item)}
+            />
+          </View>
         )}
         keyExtractor={(item) => item.exerciseId}
         contentContainerStyle={{ paddingBottom: 20 }}
+        numColumns={2}
+        columnWrapperStyle={{ justifyContent: "space-between" }}
       />
       <ExerciseBottom exercise={selectedExercise} ref={sheetRef} />
     </View>

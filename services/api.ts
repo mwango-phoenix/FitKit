@@ -44,7 +44,7 @@ export const fetchExercises = async (
   const querySnap = await getDocs(exercisesQuery);
 
   return querySnap.docs.map((doc) => ({
-    id: doc.id,
-    ...(doc.data() as Omit<Exercise, "id">),
+    exerciseId: doc.id, 
+    ...(doc.data() as Omit<Exercise, "exerciseId">),
   }));
 };
