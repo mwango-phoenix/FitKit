@@ -3,7 +3,6 @@ import { View, Text } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import RoutineList from "@/components/RoutineList";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import BottomSheet from "@gorhom/bottom-sheet";
 
 export default function HomeScreen() {
   return (

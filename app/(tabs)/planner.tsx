@@ -1,14 +1,19 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
 
-const planner = () => {
+import { View, Text } from "react-native";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import Calendar from "@/components/Calendar";
+
+export default function ExerciseScreen() {
   return (
-    <View>
-      <Text>planner</Text>
-    </View>
-  )
+    <SafeAreaProvider>
+      <GestureHandlerRootView className="flex-1">
+        <SafeAreaView className="flex-1 bg-background">
+          <View className="flex-1 mt-5 px-5">
+            <Calendar />
+          </View>
+        </SafeAreaView>
+      </GestureHandlerRootView>
+    </SafeAreaProvider>
+  );
 }
-
-export default planner
-
-const styles = StyleSheet.create({})
