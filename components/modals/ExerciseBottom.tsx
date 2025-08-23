@@ -46,7 +46,9 @@ const ExerciseBottom = forwardRef<BottomSheet, Props>(
                   Failed to load exercises.
                 </Text>
               )} */}
-              <SwitchSelector />
+              <View className="mt-4 items-center">
+                <SwitchSelector />
+              </View>
             </>
           ) : (
             <Text className="text-gray-500">No exercise selected</Text>

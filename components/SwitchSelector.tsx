@@ -7,14 +7,14 @@ export default function SwitchSelector() {
   const options = ["target", "variations"];
 
   return (
-    <View className="flex-row bg-gray-200 rounded-full p-1 w-64">
+    <View className="flex-row bg-darkBackground rounded-lg w-64">
       {options.map((option) => {
         const isActive = selected === option;
         return (
           <TouchableOpacity
             key={option}
             onPress={() => setSelected(option)}
-            className={`flex-1 py-2 rounded-full items-center ${
+            className={`flex-1 py-2 rounded-lg items-center ${
               isActive ? "bg-secondary" : "bg-darkBackground"
             }`}
           >
