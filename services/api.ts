@@ -1,4 +1,4 @@
-import { collection, getDocs, doc, getDoc, query } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, query, where } from "firebase/firestore";
 import { Routine, Exercise } from "@/.expo/types/routine";
 import { db } from "../FirebaseConfig";
 
@@ -22,4 +22,29 @@ export const fetchExercise = async (exerciseId: string): Promise<Exercise> => {
 
   return { ...(docSnap.data() as Omit<Exercise, "exerciseId">), exerciseId: exerciseId };
 
+};
+
+
+export const fetchExercises = async (
+  movement?: string
+): Promise<Exercise[]> => {
+  let exercisesQuery;
+
+  if (movement) {
+    // Filter by movement type if available (push, pull, legs, etc.)
+    exercisesQuery = query(
+      collection(db, "exercises"),
+      where("movement", "==", movement)
+    );
+  } else {
+    // No filter — fetch all
+    exercisesQuery = query(collection(db, "exercises"));
+  }
+
+  const querySnap = await getDocs(exercisesQuery);
+
+  return querySnap.docs.map((doc) => ({
+    exerciseId: doc.id, 
+    ...(doc.data() as Omit<Exercise, "exerciseId">),
+  }));
 };
