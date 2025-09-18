@@ -3,7 +3,7 @@ import { Exercise } from "@/.expo/types/routine";
 import { fetchExercises } from "@/services/api";
 import { useFetch } from "@/services/useFetch";
 import BottomSheet from "@gorhom/bottom-sheet";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { FlatList, View } from "react-native";
 import ExerciseTile from "./ExerciseTile";
 import ExerciseBottom from "./modals/ExerciseBottom";
@@ -14,10 +14,6 @@ const ExerciseList: React.FC = () => {
   );
 
   const sheetRef = useRef<BottomSheet>(null);
-
-  const openBottomSheet = useCallback(() => {
-    sheetRef.current?.snapToIndex(1);
-  }, []);
 
   const { data: exercises, loading } = useFetch(fetchExercises);
 
@@ -31,26 +27,35 @@ const ExerciseList: React.FC = () => {
   //   }
 
   const handleExercisePress = (exercise: Exercise) => {
-    setSelectedExercise(exercise);
-    openBottomSheet();
+    setSelectedExercise({ ...exercise });
+    sheetRef.current?.snapToIndex(1);
   };
 
-
-
-if (!loading && exercises) {
-  // Group by exercise.id
-  const grouped = exercises.reduce((acc, ex) => {
-    if (!acc[ex.exerciseId]) {
-      acc[ex.exerciseId] = [];
+  useEffect(() => {
+    if (selectedExercise && sheetRef.current) {
+      // Delay until after ref is populated
+      const id = setTimeout(() => {
+        sheetRef.current?.snapToIndex(1);
+      }, 0);
+      return () => clearTimeout(id);
     }
-    acc[ex.exerciseId].push(ex);
-    return acc;
-  }, {} as Record<string, typeof exercises>);
+  }, [selectedExercise]);
 
-  // Only keep IDs with more than one occurrence
-  const duplicates = Object.values(grouped).filter(group => group.length > 1);
+  if (!loading && exercises) {
+    // Group by exercise.id
+    const grouped = exercises.reduce((acc, ex) => {
+      if (!acc[ex.exerciseId]) {
+        acc[ex.exerciseId] = [];
+      }
+      acc[ex.exerciseId].push(ex);
+      return acc;
+    }, {} as Record<string, typeof exercises>);
 
-}
+    // Only keep IDs with more than one occurrence
+    const duplicates = Object.values(grouped).filter(
+      (group) => group.length > 1
+    );
+  }
 
   return (
     <View className="flex-1 ">
@@ -69,7 +74,13 @@ if (!loading && exercises) {
         numColumns={2}
         columnWrapperStyle={{ justifyContent: "space-between" }}
       />
-      <ExerciseBottom exercise={selectedExercise} ref={sheetRef} />
+      {selectedExercise && (
+        <ExerciseBottom
+          exercise={selectedExercise}
+          ref={sheetRef}
+          onClose={() => setSelectedExercise(null)}
+        />
+      )}
     </View>
   );
 };
