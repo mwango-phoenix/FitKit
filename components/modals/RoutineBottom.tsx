@@ -37,7 +37,7 @@ const RoutineBottom = forwardRef<BottomSheet, Props>(
       <BottomSheet
         snapPoints={snapPoints}
         ref={ref}
-        index={2}
+        index={-1}
         enablePanDownToClose
       >
         <BottomSheetScrollView className="p-4">

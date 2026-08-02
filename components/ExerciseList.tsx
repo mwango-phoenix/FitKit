@@ -41,22 +41,6 @@ const ExerciseList: React.FC = () => {
     }
   }, [selectedExercise]);
 
-  if (!loading && exercises) {
-    // Group by exercise.id
-    const grouped = exercises.reduce((acc, ex) => {
-      if (!acc[ex.exerciseId]) {
-        acc[ex.exerciseId] = [];
-      }
-      acc[ex.exerciseId].push(ex);
-      return acc;
-    }, {} as Record<string, typeof exercises>);
-
-    // Only keep IDs with more than one occurrence
-    const duplicates = Object.values(grouped).filter(
-      (group) => group.length > 1
-    );
-  }
-
   return (
     <View className="flex-1 ">
       <FlatList
