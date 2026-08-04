@@ -16,7 +16,7 @@ const ExerciseItem = ({ exercise }: Props) => {
       {/* Name + Equipment */}
       <View className="flex-1 ">
         <Text className="text-base font-semibold text-dark leading-snug">{exercise.name}</Text>
-        <Text className="text-md text-gray-500">{exercise.equipment[0]}</Text>
+        <Text className="text-md text-gray-500">{exercise.equipment?.[0] ?? "No equipment"}</Text>
       </View>
 
       {/* Sets & Reps */}
