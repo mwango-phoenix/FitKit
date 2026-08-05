@@ -1,30 +1,30 @@
-// components/RoutineList.tsx
 import { Exercise } from "@/.expo/types/routine";
 import { fetchExercises } from "@/services/api";
 import { useFetch } from "@/services/useFetch";
 import BottomSheet from "@gorhom/bottom-sheet";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { FlatList, View } from "react-native";
 import ExerciseTile from "./ExerciseTile";
 import ExerciseBottom from "./modals/ExerciseBottom";
+import SearchBar from "./SearchBar";
 
 const ExerciseList: React.FC = () => {
-  const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(
-    null,
-  );
+  const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
+  const [search, setSearch] = useState("");
+  const [movement, setMovement] = useState<string | undefined>(undefined);
 
   const sheetRef = useRef<BottomSheet>(null);
 
-  const { data: exercises, loading } = useFetch(fetchExercises);
+  const fetchFn = useCallback(() => fetchExercises(movement), [movement]);
+  const { data: exercises, loading } = useFetch(fetchFn);
 
-  //   if (loading) {
-  //     return (
-  //       <View className="flex-1 justify-center items-center">
-  //         <ActivityIndicator size="large" color="#4F46E5" />
-  //         <Text className="mt-2 text-lg text-gray-700">Loading Exercises...</Text>
-  //       </View>
-  //     );
-  //   }
+  const filteredExercises = useMemo(
+    () =>
+      (exercises ?? []).filter((ex) =>
+        ex.name.toLowerCase().includes(search.toLowerCase())
+      ),
+    [exercises, search]
+  );
 
   const handleExercisePress = (exercise: Exercise) => {
     setSelectedExercise({ ...exercise });
@@ -32,15 +32,13 @@ const ExerciseList: React.FC = () => {
   };
 
   return (
-    <View className="flex-1 ">
+    <View className="flex-1">
+      <SearchBar value={search} onChangeText={setSearch} />
       <FlatList
-        data={exercises}
+        data={filteredExercises}
         renderItem={({ item }: { item: Exercise }) => (
           <View className="flex-1 h-40">
-            <ExerciseTile
-              exercise={item}
-              onPress={() => handleExercisePress(item)}
-            />
+            <ExerciseTile exercise={item} onPress={() => handleExercisePress(item)} />
           </View>
         )}
         keyExtractor={(item) => item.exerciseId}
