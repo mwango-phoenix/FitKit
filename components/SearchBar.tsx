@@ -1,21 +1,22 @@
-import { View, Text, TextInput } from "react-native";
-import React from "react";
+import { View, TextInput } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 interface Props {
+  value: string;
+  onChangeText: (text: string) => void;
   onPress?: () => void;
 }
 
-const SearchBar = ({ onPress }: Props) => {
+const SearchBar = ({ value, onChangeText, onPress }: Props) => {
   return (
     <View className="flex-row items-center justify-center px-5 py-2 bg-darkBackground rounded-full">
-      <Ionicons name="search" size={20} color="gray"/>
+      <Ionicons name="search" size={20} color="gray" />
       <TextInput
         onPress={onPress}
         placeholder="Search"
         className="flex-1 ml-2"
-        value=""
-        onChangeText={() => {}}
+        value={value}
+        onChangeText={onChangeText}
         placeholderTextColor={"gray"}
       />
     </View>
