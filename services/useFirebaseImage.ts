@@ -8,6 +8,11 @@ export function useFirebaseImage(imagePath: string) {
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
+    if (!imagePath) {
+      setUrl(null);
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
     //  Reset state when imagePath changes
     setUrl(null);
@@ -35,4 +40,3 @@ export function useFirebaseImage(imagePath: string) {
 
   return { url, loading, error };
 }
-

@@ -1,6 +1,6 @@
 import { Exercise } from "@/.expo/types/routine";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import React, { forwardRef, useMemo, useState } from "react";
+import { forwardRef, useMemo, useState } from "react";
 import {
   ImageBackground,
   Modal,
@@ -13,7 +13,7 @@ import SwitchSelector from "../SwitchSelector";
 import { useFirebaseImage } from "@/services/useFirebaseImage";
 
 interface Props {
-  exercise: Exercise;
+  exercise: Exercise | null;
   onClose?: () => void;
 }
 
@@ -21,29 +21,24 @@ const ExerciseBottom = forwardRef<BottomSheet, Props>(
   ({ exercise, onClose }: Props, ref) => {
     // Define snap points for the bottom sheet
     const snapPoints = useMemo(() => ["50%", "100%"], []);
+    const imagePath = exercise?.image
+      ? `exerciseImages/${exercise.image}`
+      : null;
+    const { url: imageUrl, error } = useFirebaseImage(imagePath ?? "");
 
-    // Fetch image URLs from Firebase Storage
-    const updatedUrl = `exerciseImages/${exercise.image}`;
-    const { url: imageUrl, loading, error } = useFirebaseImage(updatedUrl);
-    const {
-      url: gifUrl,
-      loading: loadingGif,
-      error: errorGif,
-    } = useFirebaseImage(`exerciseGifs/${exercise.demo}`);
+    const gifPath = exercise?.demo ? `exerciseGifs/${exercise.demo}` : null;
+    const { url: gifUrl, error: errorGif } = useFirebaseImage(gifPath ?? "");
 
-    // State for pop up of gif displaying exercise
     const [gifVisible, setGifVisible] = useState(false);
 
     return (
       <BottomSheet
-        snapPoints={snapPoints}
         ref={ref}
+        snapPoints={snapPoints}
         index={-1}
         enablePanDownToClose
         onChange={(index) => {
-          if (index === -1) {
-            onClose?.();
-          }
+          if (index === -1) onClose?.();
         }}
       >
         <BottomSheetScrollView className="p-4">
@@ -53,14 +48,20 @@ const ExerciseBottom = forwardRef<BottomSheet, Props>(
                 <Text className="text-xl font-bold mb-2 text-center">
                   {exercise.name}
                 </Text>
-                {imageUrl && !error ? (
+                {!exercise.image ? (
+                  <ImageBackground
+                    className="w-full h-48 bg-darkBackground rounded-2xl opacity-90 justify-center items-center"
+                    imageStyle={{ borderRadius: 16 }}
+                  >
+                    <Text className="text-white">No image available</Text>
+                  </ImageBackground>
+                ) : imageUrl && !error ? (
                   <ImageBackground
                     key={exercise.exerciseId}
                     source={{ uri: imageUrl }}
                     className="w-full h-48 bg-darkBackground rounded-2xl opacity-90"
                     imageStyle={{ borderRadius: 16 }}
                   >
-                    {/* Button in bottom-left corner */}
                     <TouchableOpacity
                       className="absolute bottom-2 left-2 bg-secondary px-3 py-1 rounded-md"
                       onPress={() => setGifVisible(true)}
@@ -71,28 +72,28 @@ const ExerciseBottom = forwardRef<BottomSheet, Props>(
                     </TouchableOpacity>
                   </ImageBackground>
                 ) : (
-                  <>
-                    <ImageBackground
-                      className="w-full h-48 bg-darkBackground rounded-2xl opacity-90 justify-center items-center"
-                      imageStyle={{ borderRadius: 16 }}
-                    >
-                      <Text className="text-white">Loading image...</Text>
-                    </ImageBackground>
-                  </>
+                  <ImageBackground
+                    className="w-full h-48 bg-darkBackground rounded-2xl opacity-90 justify-center items-center"
+                    imageStyle={{ borderRadius: 16 }}
+                  >
+                    <Text className="text-white">Loading image...</Text>
+                  </ImageBackground>
                 )}
               </View>
+
               <View className="mt-4 items-center">
                 <SwitchSelector />
               </View>
 
-              {/* GIF Modal */}
               <Modal
                 visible={gifVisible}
                 animationType="fade"
                 onRequestClose={() => setGifVisible(false)}
               >
                 <View className="flex-1 bg-black/80 justify-center items-center">
-                  {gifUrl && !errorGif ? (
+                  {!exercise.demo ? (
+                    <Text className="text-white">No demo available</Text>
+                  ) : gifUrl && !errorGif ? (
                     <Image
                       source={{ uri: gifUrl }}
                       style={{ width: 300, height: 300 }}
@@ -115,7 +116,7 @@ const ExerciseBottom = forwardRef<BottomSheet, Props>(
         </BottomSheetScrollView>
       </BottomSheet>
     );
-  }
+  },
 );
 
 export default ExerciseBottom;

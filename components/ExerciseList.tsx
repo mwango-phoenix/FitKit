@@ -10,7 +10,7 @@ import ExerciseBottom from "./modals/ExerciseBottom";
 
 const ExerciseList: React.FC = () => {
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(
-    null
+    null,
   );
 
   const sheetRef = useRef<BottomSheet>(null);
@@ -31,16 +31,6 @@ const ExerciseList: React.FC = () => {
     sheetRef.current?.snapToIndex(1);
   };
 
-  useEffect(() => {
-    if (selectedExercise && sheetRef.current) {
-      // Delay until after ref is populated
-      const id = setTimeout(() => {
-        sheetRef.current?.snapToIndex(1);
-      }, 0);
-      return () => clearTimeout(id);
-    }
-  }, [selectedExercise]);
-
   return (
     <View className="flex-1 ">
       <FlatList
@@ -58,13 +48,11 @@ const ExerciseList: React.FC = () => {
         numColumns={2}
         columnWrapperStyle={{ justifyContent: "space-between" }}
       />
-      {selectedExercise && (
-        <ExerciseBottom
-          exercise={selectedExercise}
-          ref={sheetRef}
-          onClose={() => setSelectedExercise(null)}
-        />
-      )}
+      <ExerciseBottom
+        exercise={selectedExercise}
+        ref={sheetRef}
+        onClose={() => setSelectedExercise(null)}
+      />
     </View>
   );
 };
