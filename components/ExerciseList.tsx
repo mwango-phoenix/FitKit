@@ -7,6 +7,8 @@ import { FlatList, View } from "react-native";
 import ExerciseTile from "./ExerciseTile";
 import ExerciseBottom from "./modals/ExerciseBottom";
 import SearchBar from "./SearchBar";
+import { Switch } from "react-native-gesture-handler";
+import SwitchSelector from "./SwitchSelector";
 
 const ExerciseList: React.FC = () => {
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
@@ -34,6 +36,11 @@ const ExerciseList: React.FC = () => {
   return (
     <View className="flex-1">
       <SearchBar value={search} onChangeText={setSearch} />
+      <SwitchSelector
+        options={["all", "push", "pull", "legs"]}
+        value={movement ?? "all"}
+        onChange={setMovement}
+      />
       <FlatList
         data={filteredExercises}
         renderItem={({ item }: { item: Exercise }) => (

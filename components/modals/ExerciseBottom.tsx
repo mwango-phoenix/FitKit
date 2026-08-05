@@ -30,7 +30,7 @@ const ExerciseBottom = forwardRef<BottomSheet, Props>(
     const { url: gifUrl, error: errorGif } = useFirebaseImage(gifPath ?? "");
 
     const [gifVisible, setGifVisible] = useState(false);
-    const [view, setView] = useState("target");
+    const [viewMode, setViewMode] = useState("target");
 
     return (
       <BottomSheet
@@ -83,7 +83,11 @@ const ExerciseBottom = forwardRef<BottomSheet, Props>(
               </View>
 
               <View className="mt-4 items-center">
-                <SwitchSelector value={view} onChange={setView} />
+                <SwitchSelector
+                  options={["target", "variations"]}
+                  value={viewMode}
+                  onChange={setViewMode}
+                />
               </View>
 
               <Modal

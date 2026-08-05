@@ -1,14 +1,12 @@
-import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 
 interface Props {
+  options: string[];
   value: string;
   onChange: (value: string) => void;
 }
 
-export default function SwitchSelector({ value, onChange }: Props) {
-  const options = ["target", "variations"];
-
+export default function SwitchSelector({ options, value, onChange }: Props) {
   return (
     <View className="flex-row bg-darkBackground rounded-lg w-64">
       {options.map((option) => {
