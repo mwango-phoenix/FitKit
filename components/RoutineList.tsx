@@ -3,17 +3,17 @@ import { Routine } from "@/.expo/types/routine";
 import React, { useCallback, useRef, useState } from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import RoutineTile from "./RoutineTile";
-import BottomSheet from "@gorhom/bottom-sheet";
 import RoutineBottom from "./modals/RoutineBottom";
 import { useFetch } from "@/services/useFetch";
 import { fetchRoutines } from "@/services/api";
+import { BottomSheetFuncs } from "./modals/BottomSheet";
 
 
 
 const RoutineList: React.FC = () => {
   const [selectedRoutine, setSelectedRoutine] = useState<Routine | null>(null);
 
-  const sheetRef = useRef<BottomSheet>(null);
+  const sheetRef = useRef<BottomSheetFuncs>(null);
 
   const { data: routines, loading } = useFetch(fetchRoutines);
 

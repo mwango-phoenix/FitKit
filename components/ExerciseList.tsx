@@ -1,21 +1,20 @@
 import { Exercise } from "@/.expo/types/routine";
 import { fetchExercises } from "@/services/api";
 import { useFetch } from "@/services/useFetch";
-import BottomSheet from "@gorhom/bottom-sheet";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { FlatList, View } from "react-native";
 import ExerciseTile from "./ExerciseTile";
 import ExerciseBottom from "./modals/ExerciseBottom";
 import SearchBar from "./SearchBar";
-import { Switch } from "react-native-gesture-handler";
 import SwitchSelector from "./SwitchSelector";
+import { BottomSheetFuncs } from "./modals/BottomSheet";
 
 const ExerciseList: React.FC = () => {
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
   const [search, setSearch] = useState("");
   const [movement, setMovement] = useState<string | undefined>(undefined);
 
-  const sheetRef = useRef<BottomSheet>(null);
+  const sheetRef = useRef<BottomSheetFuncs>(null);
 
   const fetchFn = useCallback(() => fetchExercises(movement), [movement]);
   const { data: exercises, loading } = useFetch(fetchFn);

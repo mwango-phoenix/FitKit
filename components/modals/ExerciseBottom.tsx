@@ -1,5 +1,5 @@
 import { Exercise } from "@/.expo/types/routine";
-import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import BottomSheet, { BottomSheetFuncs } from "@/components/modals/BottomSheet";
 import { forwardRef, useMemo, useState } from "react";
 import {
   ImageBackground,
@@ -17,7 +17,7 @@ interface Props {
   onClose?: () => void;
 }
 
-const ExerciseBottom = forwardRef<BottomSheet, Props>(
+const ExerciseBottom = forwardRef<BottomSheetFuncs, Props>(
   ({ exercise, onClose }: Props, ref) => {
     // Define snap points for the bottom sheet
     const snapPoints = useMemo(() => ["50%", "100%"], []);
@@ -42,7 +42,7 @@ const ExerciseBottom = forwardRef<BottomSheet, Props>(
           if (index === -1) onClose?.();
         }}
       >
-        <BottomSheetScrollView className="p-4">
+        <View className="p-4">
           {exercise ? (
             <>
               <View>
@@ -118,7 +118,7 @@ const ExerciseBottom = forwardRef<BottomSheet, Props>(
           ) : (
             <Text className="text-gray-500">No exercise selected</Text>
           )}
-        </BottomSheetScrollView>
+        </View>
       </BottomSheet>
     );
   },
